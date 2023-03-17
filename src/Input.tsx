@@ -4,7 +4,9 @@ import styles from "./App.module.css";
 
 type InputProps = {
   isEnabled?: boolean;
+  isFlipped?: string;
   handleNext: Function;
+  handleRemove: Function;
   index: number;
   ref?: any;
   defaultValue?: TryResult;
@@ -34,10 +36,21 @@ export const Input: Component<InputProps> = (props) => {
   return (
     <input
       ref={props.ref}
-      class={`${styles.input} ${styles[props.defaultValue?.result || ""]}`}
+      class={`${styles.input} ${
+        props.defaultValue?.result === "Exact" ? styles.Exact : ""
+      } ${props.defaultValue?.result === "Close" ? styles.Close : ""} ${
+        props.isFlipped === "" ? "" : styles.flip
+      } ${props.isFlipped === "Exact" ? styles.Exact : ""} ${
+        props.isFlipped === "Close" ? styles.Close : ""
+      }`}
       value={letter()}
       disabled={!props.isEnabled}
       onInput={handleInput}
+      onKeyDown={(e) => {
+        if (e.key === "Backspace") {
+          props.handleRemove(props.index);
+        }
+      }}
     />
   );
 };

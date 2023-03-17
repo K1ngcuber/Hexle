@@ -3,6 +3,7 @@ import { batch, Component, createSignal, onMount } from "solid-js";
 import styles from "./App.module.css";
 import { seedRandom } from "./Helper";
 import { InputRow } from "./InputRow";
+import { Win } from "./Win";
 
 export type TryResult = {
   value: string;
@@ -13,9 +14,11 @@ const App: Component = () => {
   const [currentRow, setCurrentRow] = createSignal(0);
   const [colorCode, setColorCode] = createSignal("#000000");
   const [userCode, setUserCode] = createSignal("#000000");
+  const [win, setWin] = createSignal(false);
+
   //create empty tries array with 6 rows
   const [tries, setTries] = createSignal(
-    Array.from({ length: 6 }, () => []) as TryResult[][]
+    Array.from({ length: 7 }, () => []) as TryResult[][]
   );
 
   onMount(() => {
@@ -48,7 +51,11 @@ const App: Component = () => {
       if (input[i].toLocaleLowerCase() === colorCode()[i].toLocaleLowerCase()) {
         tryResult.push({ value: input[i], result: "Exact" });
       } else if (
-        colorCode().toLocaleLowerCase().includes(input[i].toLocaleLowerCase())
+        colorCode()
+          .toLocaleLowerCase()
+          .includes(input[i].toLocaleLowerCase()) &&
+        !tryResult.some((x) => x.value === input[i]) &&
+        !input.slice(0, i).includes(input[i])
       ) {
         tryResult.push({ value: input[i], result: "Close" });
       } else {
@@ -62,14 +69,13 @@ const App: Component = () => {
     const checkResult = checkInput(color);
     tries()[currentRow()] = checkResult;
 
-    if (color === colorCode()) {
-      alert("You win!");
-      return;
-    }
-
     setUserCode(color);
     setTries([...tries()]);
     setCurrentRow(currentRow() + 1);
+
+    if (color === colorCode()) {
+      setWin(true);
+    }
   };
 
   return (
@@ -79,20 +85,25 @@ const App: Component = () => {
         background: `linear-gradient(90deg, ${colorCode()} 0%, ${userCode()} 100%)`,
       }}
     >
-      <header class={styles.header}>
-        <span class={styles.headerRow}>
-          <h1>Hexle</h1> Guess the color
-        </span>
-        {tries().map((_, i) => (
-          <div class={styles.inputRow}>
-            <InputRow
-              handleInput={handleInput}
-              active={i === currentRow()}
-              defaultValue={tries()[i]}
-              bla={console.log(tries()[i])}
-            />
-          </div>
-        ))}
+      <header class={styles.content}>
+        <div>
+          <span class={styles.headerRow}>
+            <h1 class={styles.hexle}>Hexle </h1>- Guess the color
+          </span>
+        </div>
+        <div class={styles.guessRow}>
+          {win() && <Win colorCode={colorCode()} />}
+          {tries().map((_, i) => (
+            <div class={styles.inputRow}>
+              <InputRow
+                checkInput={checkInput}
+                handleInput={handleInput}
+                active={!win() && i === currentRow()}
+                defaultValue={tries()[i]}
+              />
+            </div>
+          ))}
+        </div>
       </header>
     </div>
   );
