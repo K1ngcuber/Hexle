@@ -1,10 +1,25 @@
-export const generateRandomHex = (length: number): string => {
-  let result = "";
-  const characters = "0123456789ABCDEF";
-  for (let i = 0; i < length; i++) {
-    result += characters[Math.floor(Math.random() * characters.length)];
-  }
-  return result;
+export const generateRandomHex = (): string => {
+  // Get the current date
+  const today = new Date();
+
+  // Get the day of the year (1-365)
+  const dayOfYear = Math.floor(
+    (today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) /
+      1000 /
+      60 /
+      60 /
+      24
+  );
+
+  // Use the day of the year as a seed value for the random number generator
+  const rng = seedRandom(dayOfYear.toString());
+
+  // Generate a random hex code
+  const randomCode = ((rng() * 0xff_ff_ff) << 0).toString(16);
+
+  const hexCode = `000000${randomCode}`.slice(-6);
+
+  return `#${hexCode}`;
 };
 
 export const seedRandom = (seed: string): (() => number) => {
@@ -31,4 +46,28 @@ export const seedRandom = (seed: string): (() => number) => {
 
   // Return the random number generator function
   return rng;
+};
+
+export type TryResult = {
+  value: string;
+  result: "Exact" | "Close" | "None";
+};
+
+export const checkInput = (input: string, colorCode: string): TryResult[] => {
+  const tryResult = [] as TryResult[];
+
+  for (let i = 1; i <= 6; i++) {
+    if (input[i].toLocaleLowerCase() === colorCode[i].toLocaleLowerCase()) {
+      tryResult.push({ value: input[i], result: "Exact" });
+    } else if (
+      colorCode.toLocaleLowerCase().includes(input[i].toLocaleLowerCase()) &&
+      !tryResult.some((x) => x.value === input[i]) &&
+      !input.slice(0, i).includes(input[i])
+    ) {
+      tryResult.push({ value: input[i], result: "Close" });
+    } else {
+      tryResult.push({ value: input[i], result: "None" });
+    }
+  }
+  return tryResult;
 };

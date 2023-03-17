@@ -1,10 +1,11 @@
 import { Component, createSignal, onMount } from "solid-js";
-import { TryResult } from "./App";
 import styles from "./App.module.css";
+import { TryResult } from "./Helper";
+import { Flip } from "./InputRow";
 
 type InputProps = {
   isEnabled?: boolean;
-  isFlipped?: string;
+  flip: Flip;
   handleNext: Function;
   handleRemove: Function;
   index: number;
@@ -13,7 +14,7 @@ type InputProps = {
 };
 
 export const Input: Component<InputProps> = (props) => {
-  const [letter, setLetter] = createSignal("");
+  const [letter, setLetter] = createSignal(undefined as string | undefined);
   onMount(() => {
     setLetter(props.defaultValue?.value || "");
   });
@@ -39,11 +40,11 @@ export const Input: Component<InputProps> = (props) => {
       class={`${styles.input} ${
         props.defaultValue?.result === "Exact" ? styles.Exact : ""
       } ${props.defaultValue?.result === "Close" ? styles.Close : ""} ${
-        props.isFlipped === "" ? "" : styles.flip
-      } ${props.isFlipped === "Exact" ? styles.Exact : ""} ${
-        props.isFlipped === "Close" ? styles.Close : ""
+        props.flip?.type === undefined ? "" : styles.flip
+      } ${props.flip?.type === "Exact" ? styles.Exact : ""} ${
+        props.flip?.type === "Close" ? styles.Close : ""
       }`}
-      value={letter()}
+      value={props.flip?.value || letter() || ""}
       disabled={!props.isEnabled}
       onInput={handleInput}
       onKeyDown={(e) => {

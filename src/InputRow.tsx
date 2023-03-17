@@ -1,7 +1,7 @@
 import { Component, createEffect, createSignal, onMount } from "solid-js";
 import { Input } from "./Input";
 import styles from "./App.module.css";
-import { TryResult } from "./App";
+import { TryResult } from "./Helper";
 
 type InputRowProps = {
   checkInput: Function;
@@ -10,10 +10,17 @@ type InputRowProps = {
   defaultValue: TryResult[];
 };
 
+export type Flip =
+  | {
+      type?: string;
+      value: string;
+    }
+  | undefined;
+
 export const InputRow: Component<InputRowProps> = (props) => {
   const [inputRefs, setInputRefs] = createSignal([] as HTMLInputElement[]);
   const [flipped, setFlipped] = createSignal(
-    Array.from({ length: 6 }, () => "")
+    Array.from({ length: 6 }, () => undefined as Flip)
   );
   const [colorCode, setColorCode] = createSignal("#000000");
 
@@ -36,13 +43,13 @@ export const InputRow: Component<InputRowProps> = (props) => {
       allPromises.push(
         new Promise((resolve) => {
           setTimeout(() => {
-            setFlipped(
-              flipped().map((value, index) =>
-                index === i ? check.at(i)?.result ?? "None" : value
-              )
-            );
+            flipped()[i] = {
+              type: check[i]?.result ?? "None",
+              value: check[i]?.value ?? "",
+            } as Flip;
+            setFlipped([...flipped()]);
             resolve(true);
-          }, i * 500);
+          }, i * 400);
         })
       );
     }
@@ -52,9 +59,9 @@ export const InputRow: Component<InputRowProps> = (props) => {
 
     await new Promise((resolve) => {
       setTimeout(() => {
-        setFlipped(Array.from({ length: 6 }, () => ""));
+        setFlipped(Array.from({ length: 6 }, () => undefined as Flip));
         resolve(true);
-      }, 600);
+      }, 400);
     });
   };
 
@@ -64,6 +71,11 @@ export const InputRow: Component<InputRowProps> = (props) => {
     setColorCode(
       colorCode().slice(0, index + 1) + letter + colorCode().slice(index + 2)
     );
+
+    flipped()[index] = {
+      type: undefined,
+      value: letter,
+    } as Flip;
 
     if (index === 5 && colorCode().length === 7) {
       const result = props.checkInput(colorCode());
@@ -95,7 +107,6 @@ export const InputRow: Component<InputRowProps> = (props) => {
   return (
     <div class={styles.inputRow}>
       <div class={styles.hashTag}>#</div>
-      {/* Loop 6 times */}
       {flipped().map((value, i) => (
         <Input
           ref={(el: HTMLInputElement) => setInputRefs([...inputRefs(), el])}
@@ -103,7 +114,7 @@ export const InputRow: Component<InputRowProps> = (props) => {
           handleNext={handleNext}
           handleRemove={handleRemove}
           isEnabled={props.active}
-          isFlipped={value}
+          flip={value}
           defaultValue={props.defaultValue ? props.defaultValue[i] : undefined}
         />
       ))}
