@@ -1,0 +1,81 @@
+.App {
+  text-align: center;
+}
+
+.logo {
+  animation: logo-spin infinite 20s linear;
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.header {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.input {
+  width: 60px;
+  height: 60px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  padding: 20px 20px;
+  text-align: center;
+  margin: 8px 0;
+  display: inline-block;
+  font-size: 16px;
+  line-height: 1.5;
+  transition: all 0.15s;
+
+  /* All uppercase and bold */
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.input:focus {
+  border-color: #66afe9;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.inputRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.headerRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.button {
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 26px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.Exact {
+  background-color: #4caf50;
+}
+
+.Close {
+  background-color: #fde24b;
+}
