@@ -9,5 +9,4 @@ export default defineConfig({
   build: {
     target: "esnext",
   },
-  base: "https://k1ngcuber.github.io/Hexle/",
 });

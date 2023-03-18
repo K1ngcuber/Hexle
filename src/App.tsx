@@ -1,110 +1,127 @@
-import { Component, createSignal, onMount } from "solid-js";
+import { Component, createSignal, onMount } from 'solid-js'
 
-import styles from "./App.module.css";
-import { checkInput, generateRandomHex, TryResult } from "./Helper";
-import { InputRow } from "./InputRow";
-import { clearStorage, loadItem, saveItem } from "./StorageService";
-import { Tutorial } from "./Tutorial";
-import { Win } from "./Win";
+import styles from './App.module.css'
+import { checkInput, getRandomHexCode, TryResult } from './Helper'
+import { InputRow } from './InputRow'
+import { clearStorage, loadItem, saveItem } from './StorageService'
+import { Tutorial } from './Tutorial/Tutorial'
+import { ResultScreen } from './ResultScreen'
 
 const App: Component = () => {
   //the current active row
-  const [currentRow, setCurrentRow] = createSignal(0);
+  const [currentRow, setCurrentRow] = createSignal(0)
 
   //the color to guess
-  const [colorCode, setColorCode] = createSignal("#000000");
+  const [colorCode, setColorCode] = createSignal('#000000')
 
   //current user input
-  const [userCode, setUserCode] = createSignal("#000000");
+  const [userCode, setUserCode] = createSignal('#000000')
 
   //show win screen
-  const [win, setWin] = createSignal(false);
+  const [win, setWin] = createSignal(false)
+
+  //show lose screen
+  const [lose, setLose] = createSignal(false)
 
   //show tutorial
-  const [tutorial, setTutorial] = createSignal(false);
+  const [tutorial, setTutorial] = createSignal(false)
+
+  //helper to only show animation once after win and not on reload
+  const [particle, setParticle] = createSignal(false)
 
   //create empty tries array with 6 rows
   const [tries, setTries] = createSignal(
-    Array.from({ length: 7 }, () => []) as TryResult[][]
-  );
+    Array.from({ length: 9 }, () => []) as TryResult[][],
+  )
 
   onMount(() => {
-    // Check if local storage is expired
-    const savedDate = loadItem("colorCodeExpires");
+    //Check if local storage is expired
+    const savedDate = loadItem('colorCodeExpires')
     if (savedDate) {
-      const currentDate = new Date().getUTCDate();
-      if (currentDate > parseInt(savedDate)) {
-        clearStorage();
+      const currentDate = new Date().getUTCDate()
+      if (currentDate != parseInt(savedDate)) {
+        clearStorage()
       }
     }
 
-    const savedWin = loadItem("win");
+    const savedWin = loadItem('win')
     if (savedWin) {
-      setWin(savedWin === "true");
+      setWin(savedWin === 'true')
+    }
+
+    const savedLose = loadItem('lose')
+    if (savedLose) {
+      setLose(savedLose === 'true')
     }
 
     //Check if tutorial already viewed
-    const savedTutorial = loadItem("tutorial");
+    const savedTutorial = loadItem('tutorial')
     if (savedTutorial) {
-      setTutorial(savedTutorial === "true");
+      setTutorial(savedTutorial === 'true')
     } else {
-      setTutorial(true);
+      setTutorial(true)
     }
 
     //Check if color already exists in storage
-    const savedColor = loadItem("colorCode");
+    const savedColor = loadItem('colorCode')
     if (savedColor) {
-      setColorCode(savedColor);
+      setColorCode(savedColor)
     }
 
     //Populate state with local storage data
-    const savedTries = loadItem("tries");
+    const savedTries = loadItem('tries')
     if (savedTries) {
-      setTries(JSON.parse(savedTries));
+      setTries(JSON.parse(savedTries))
     }
 
-    const savedRow = loadItem("currentRow");
+    const savedRow = loadItem('currentRow')
     if (savedRow) {
-      setCurrentRow(parseInt(savedRow));
+      setCurrentRow(parseInt(savedRow))
     }
 
-    const savedUserColor = loadItem("userColor");
+    const savedUserColor = loadItem('userColor')
     if (savedUserColor) {
-      setUserCode(savedUserColor);
+      setUserCode(savedUserColor)
     }
 
-    const newColor = generateRandomHex();
+    const newColor = getRandomHexCode()
 
     //Save in local storage with expiration date of 1 day
-    saveItem("colorCode", newColor);
-    saveItem("colorCodeExpires", new Date().getUTCDate().toString());
-    setColorCode(newColor);
-  });
+    saveItem('colorCode', newColor)
+    saveItem('colorCodeExpires', new Date().getUTCDate().toString())
+    setColorCode(newColor)
+  })
 
   const handleInput = (color: string) => {
-    const checkResult = checkInput(color, colorCode());
-    tries()[currentRow()] = checkResult;
+    const checkResult = checkInput(color, colorCode())
+    tries()[currentRow()] = checkResult
 
-    setUserCode(color);
-    setTries([...tries()]);
-    setCurrentRow(currentRow() + 1);
+    setUserCode(color)
+    setTries([...tries()])
+    setCurrentRow(currentRow() + 1)
 
-    saveItem("userColor", color);
-    saveItem("tries", JSON.stringify(tries()));
-    saveItem("currentRow", currentRow().toString());
+    saveItem('userColor', color)
+    saveItem('tries', JSON.stringify(tries()))
+    saveItem('currentRow', currentRow().toString())
 
     if (color === colorCode()) {
-      setWin(true);
-      saveItem("win", "true");
+      setWin(true)
+      setParticle(true)
+      saveItem('win', 'true')
     }
-  };
+
+    if (currentRow() === 8) {
+      setLose(true)
+      saveItem('lose', 'true')
+    }
+  }
 
   const handleStart = () => {
-    saveItem("tutorial", "false");
+    saveItem('tutorial', 'false')
     setTimeout(() => {
-      setTutorial(false);
-    }, 500);
-  };
+      setTutorial(false)
+    }, 500)
+  }
 
   return (
     <div
@@ -121,7 +138,7 @@ const App: Component = () => {
           </span>
         </div>
         <div class={styles.guessRow}>
-          {win() && <Win colorCode={colorCode()} />}
+          {(win() || lose()) && <ResultScreen colorCode={colorCode()} won={win()} lost={lose()}/>}
           {tries().map((_, i) => (
             <div class={styles.inputRow}>
               <InputRow
@@ -160,7 +177,7 @@ const App: Component = () => {
         </div>
       </header>
     </div>
-  );
-};
+  )
+}
 
-export default App;
+export default App
