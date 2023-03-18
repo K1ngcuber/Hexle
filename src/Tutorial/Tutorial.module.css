@@ -1,0 +1,93 @@
+.tutorialModal {
+  position: absolute;
+
+  z-index: 2;
+
+  top: 5vh;
+  left: 12.5vw;
+  width: 75vw;
+
+  background-color: rgba(70, 70, 70, 1);
+  border-radius: 10px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding-bottom:10px;
+}
+
+@media screen and (min-width: 1000px) {
+  .tutorialModal {
+    top: 12.5vh;
+    left: 25vw;
+    width: 50vw;
+    height: 70vh;
+  }
+}
+
+.tutorialModal h1 {
+  font-weight: bold;
+  font-size: calc(10pt + 4vmin);
+  margin: 0;
+  margin-top: 5px;
+}
+
+.tutorialModal p {
+  text-align: left;
+  padding: 10px;
+  font-size: calc(2pt + 3vmin);
+}
+
+@media screen and (min-width: 1000px) {
+  .tutorialModal p {
+    font-size: calc(2pt + 2vmin);
+  }
+}
+
+.fadeOut {
+  animation: fadeOut 0.5s ease 0s 1;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.tutorialButton {
+  font-size: calc(10pt + 2vmin);
+  background-color: rgba(0, 0, 0, 0);
+  color: white;
+  padding: 15px 32px;
+  border: 2px solid white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.tutorialButton:hover {
+  background-color: white;
+  color: black;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.tutorialRed {
+  border-bottom: 2px solid #ff0000;
+}
+
+.tutorialGreen {
+  border-bottom: 2px solid #00ff00;
+}
+
+.tutorialBlue {
+  border-bottom: 2px solid #0000ff;
+}
+
+.tutorialYellow {
+  border-bottom: 2px solid #ffff00;
+}
