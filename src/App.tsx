@@ -60,7 +60,7 @@ const App: Component = () => {
     //   setTutorial(savedTutorial === 'true')
     // } else {
     // }
-    setTutorial(true)
+    if(!win() && !lose()) setTutorial(true)
 
     //Check if color already exists in storage
     const savedColor = loadItem('colorCode')
