@@ -55,12 +55,12 @@ const App: Component = () => {
     }
 
     //Check if tutorial already viewed
-    const savedTutorial = loadItem('tutorial')
-    if (savedTutorial) {
-      setTutorial(savedTutorial === 'true')
-    } else {
-      setTutorial(true)
-    }
+    // const savedTutorial = loadItem('tutorial')
+    // if (savedTutorial) {
+    //   setTutorial(savedTutorial === 'true')
+    // } else {
+    // }
+    setTutorial(true)
 
     //Check if color already exists in storage
     const savedColor = loadItem('colorCode')

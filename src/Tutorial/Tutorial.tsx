@@ -41,7 +41,8 @@ export const Tutorial: Component<{ handleStart: Function }> = (props) => {
         Looking for a fun and addictive game that will put your color knowledge
         to the test? <br />
         Check out Hexle! <br /> In this game, instead of guessing words, you'll
-        be trying to guess a hex color code in just 10 tries. <br />
+        be trying to guess the color on the left side of the screen in just 10
+        tries. Your guesses are shown on the right side <br />
         <br />A Hex Color Code is a six-character combination of letters A-F and
         numbers 0-9, that represents a specific color. For example,{' '}
         <span class={tutorialStyles.tutorialRed}>#FF0000</span> is red,{' '}
