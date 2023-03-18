@@ -110,7 +110,7 @@ const App: Component = () => {
       saveItem('win', 'true')
     }
 
-    if (currentRow() === 8) {
+    if (currentRow() === 9) {
       setLose(true)
       saveItem('lose', 'true')
     }
