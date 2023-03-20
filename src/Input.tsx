@@ -39,11 +39,11 @@ export const Input: Component<InputProps> = (props) => {
       ref={props.ref}
       class={`${styles.input} ${
         props.defaultValue?.result === "Exact" ? styles.Exact : ""
-      } ${props.defaultValue?.result === "Close" ? styles.Close : ""} ${
-        props.flip?.type === undefined ? "" : styles.flip
-      } ${props.flip?.type === "Exact" ? styles.Exact : ""} ${
-        props.flip?.type === "Close" ? styles.Close : ""
-      }`}
+      } ${props.defaultValue?.result === "Close" ? styles.Close : ""}
+      ${props.defaultValue?.result === "None" ? styles.None : ""}
+       ${props.flip?.type === undefined ? "" : styles.flip} ${
+        props.flip?.type === "Exact" ? styles.Exact : ""
+      } ${props.flip?.type === "Close" ? styles.Close : ""}`}
       value={props.flip?.value || letter() || ""}
       disabled={!props.isEnabled}
       onInput={handleInput}

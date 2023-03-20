@@ -137,7 +137,7 @@
 
 .flip {
   animation: flip 0.4s ease 0s 1;
-  background-color: rgba(0, 0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.5);
   transform-style: preserve-3d;
 
   /* All uppercase and bold */
