@@ -101,7 +101,7 @@ const App: Component = () => {
     saveItem("tries", JSON.stringify(tries()));
     saveItem("currentRow", currentRow().toString());
 
-    if (color === colorCode()) {
+    if (color.toUpperCase() === colorCode().toUpperCase()) {
       setWin(true);
       saveItem("win", "true");
       return;
